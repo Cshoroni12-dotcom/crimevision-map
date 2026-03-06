@@ -1,62 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>CrimeVision Map</title>
+  <meta charset="UTF-8">
+  <title>CrimeVision Map - Apple Glass UI</title>
 
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <style>
+    /* Fullscreen map */
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
 
-<!-- Leaflet Heatmap Plugin -->
-<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
-
-<style>
-body {
-  margin: 0;
-  font-family: 'Helvetica Neue', sans-serif;
-  background: #1e1e1e;
-}
-
-#map {
-  height: 90vh;
-  border-radius: 20px;
-  margin: 20px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-}
-
-.panel {
-  position: absolute;
-  top: 30px;
-  right: 30px;
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(15px);
-  padding: 20px;
-  border-radius: 15px;
-  color: white;
-  max-width: 250px;
-  font-weight: bold;
-}
-</style>
+    /* Apple Glass hover glow for buttons */
+    .glass-button:hover {
+      box-shadow: 0 0 15px rgba(255,255,255,0.5);
+    }
+  </style>
 </head>
+<body class="bg-gray-900">
 
-<body>
+  <!-- Map Container -->
+  <div id="map"></div>
 
-<h1 class="text-4xl font-bold p-6 text-white">CrimeVision Map</h1>
+  <!-- Floating Crime Dashboard -->
+  <div class="absolute top-6 left-6 w-80 p-5 rounded-2xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-lg">
+    <h2 class="text-white text-2xl font-semibold mb-2">CrimeVision Dashboard</h2>
+    <p class="text-white/80 mb-4">Current Crime Rate:</p>
+    <div class="w-full h-4 bg-white/30 rounded-full overflow-hidden mb-4">
+      <div class="h-full bg-red-400 rounded-full" style="width: 65%;"></div>
+    </div>
+    <button class="w-full py-2 rounded-lg bg-white/10 backdrop-blur-sm text-white font-medium glass-button transition duration-300">Refresh Data</button>
+  </div>
 
-<div id="map"></div>
+  <!-- Floating Filters Panel -->
+  <div class="absolute top-6 right-6 w-64 p-4 rounded-2xl bg-white/15 backdrop-blur-lg border border-white/20 shadow-lg">
+    <h3 class="text-white font-semibold mb-3">Filters</h3>
+    <label class="flex items-center mb-2">
+      <input type="checkbox" class="mr-2 accent-red-400">
+      Violent Crimes
+    </label>
+    <label class="flex items-center mb-2">
+      <input type="checkbox" class="mr-2 accent-yellow-400">
+      Property Crimes
+    </label>
+    <label class="flex items-center">
+      <input type="checkbox" class="mr-2 accent-blue-400">
+      Other
+    </label>
+  </div>
 
-<div class="panel">
-  <p>Crime Dashboard</p>
-  <p>Total Crimes: <span id="total-crimes">0</span></p>
-  <p>Hotspots Highlighted</p>
-</div>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Initialize map
+    const map = L.map('map').setView([37.5665, 126.9780], 13); // Seoul coordinates
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
-<script src="script.js"></script>
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+    }).addTo(map);
 
+    // Example crime data
+    const crimes = [
+      { lat: 37.5700, lng: 126.9768, type: "violent" },
+      { lat: 37.5651, lng: 126.9895, type: "property" },
+      { lat: 37.5610, lng: 126.9820, type: "other" },
+    ];
+
+    // Add markers
+    crimes.forEach(crime => {
+      let color = crime.type === "violent" ? "red" :
+                  crime.type === "property" ? "yellow" : "blue";
+      L.circleMarker([crime.lat, crime.lng], {
+        radius: 8,
+        fillColor: color,
+        color: "#fff",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+      }).addTo(map).bindPopup(`Type: ${crime.type}`);
+    });
+  </script>
 </body>
 </html>
