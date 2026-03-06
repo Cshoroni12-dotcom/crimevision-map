@@ -1,30 +1,79 @@
 // Initialize map
-var map = L.map('map').setView([37.5665, 126.9780], 13);
+const map = L.map('map').setView([37.5665, 126.9780], 13);
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap'
+// Base map
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19
 }).addTo(map);
 
-// Built-in crime data
-var crimes = [
-    {lat: 37.5665, lng: 126.9780, type: "Robbery"},
-    {lat: 37.5700, lng: 126.9820, type: "Assault"},
-    {lat: 37.5650, lng: 126.9900, type: "Theft"},
-    {lat: 37.5610, lng: 126.9750, type: "Burglary"},
-    {lat: 37.5685, lng: 126.9905, type: "Vandalism"}
-];
+// Placeholder for real crime data
+// Use this structure when adding real data:
+// {lat: 37.56, lng: 126.98, type: "violent"}
+let crimes = []; // currently empty
 
-// Add markers and heatmap
-crimes.forEach(function(crime) {
-    L.marker([crime.lat, crime.lng])
-     .addTo(map)
-     .bindPopup("Crime: " + crime.type);
+// Heatmap layer
+let heatLayer = L.heatLayer([], { radius: 25, blur: 15, maxZoom: 17 }).addTo(map);
+
+// Function to render crimes
+function renderCrimes() {
+  // Clear all existing markers
+  if (window.markers) {
+    window.markers.forEach(marker => map.removeLayer(marker));
+  }
+  window.markers = [];
+
+  // Filter checkboxes
+  const showViolent = document.getElementById("violent-checkbox").checked;
+  const showProperty = document.getElementById("property-checkbox").checked;
+  const showOther = document.getElementById("other-checkbox").checked;
+
+  // Filtered crimes
+  const filteredCrimes = crimes.filter(crime => {
+    return (crime.type === "violent" && showViolent) ||
+           (crime.type === "property" && showProperty) ||
+           (crime.type === "other" && showOther);
+  });
+
+  // Update heatmap
+  const heatPoints = filteredCrimes.map(c => [c.lat, c.lng, 0.6]);
+  heatLayer.setLatLngs(heatPoints);
+
+  // Add markers
+  filteredCrimes.forEach(crime => {
+    let color = crime.type === "violent" ? "#7FDBFF" :
+                crime.type === "property" ? "#7CFC00" : "#00FFFF";
+
+    const marker = L.circleMarker([crime.lat, crime.lng], {
+      radius: 10,
+      fillColor: color,
+      color: "#fff",
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 0.9
+    }).addTo(map);
+
+    marker.bindPopup(`Type: ${crime.type}`);
+    window.markers.push(marker);
+  });
+
+  // Update crime rate bar (example: percentage of visible crimes)
+  const rateBar = document.getElementById("crime-rate-bar");
+  const percent = filteredCrimes.length > 0 ? Math.min(100, filteredCrimes.length * 10) : 0;
+  rateBar.style.width = percent + "%";
+}
+
+// Initial render
+renderCrimes();
+
+// Event listeners for filters
+document.getElementById("violent-checkbox").addEventListener("change", renderCrimes);
+document.getElementById("property-checkbox").addEventListener("change", renderCrimes);
+document.getElementById("other-checkbox").addEventListener("change", renderCrimes);
+
+// Refresh button placeholder
+document.getElementById("refresh-btn").addEventListener("click", () => {
+  console.log("Refresh data clicked. Add API fetch logic here.");
+  // Example: fetch new crime data from API
+  // crimes = fetchCrimeData();
+  renderCrimes();
 });
-
-// Update panel total
-document.getElementById('total-crimes').innerText = crimes.length;
-
-// Create heatmap points
-var heatPoints = crimes.map(c => [c.lat, c.lng, 0.5]);
-var heat = L.heatLayer(heatPoints, {radius: 25, blur: 20, maxZoom: 17}).addTo(map);
