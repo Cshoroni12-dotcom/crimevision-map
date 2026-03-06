@@ -1,37 +1,61 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
 <title>CrimeVision Map</title>
 
+<!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
 
+<!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
+<!-- Leaflet Heatmap Plugin -->
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+
 <style>
-body{
-margin:0;
+body {
+  margin: 0;
+  font-family: 'Helvetica Neue', sans-serif;
+  background: #1e1e1e;
 }
 
-#map{
-height:600px;
+#map {
+  height: 90vh;
+  border-radius: 20px;
+  margin: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+
+.panel {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(15px);
+  padding: 20px;
+  border-radius: 15px;
+  color: white;
+  max-width: 250px;
+  font-weight: bold;
 }
 </style>
-
 </head>
 
-<body class="bg-gray-900 text-white">
+<body>
 
-<h1 class="text-3xl font-bold p-6">
-CrimeVision Map
-</h1>
+<h1 class="text-4xl font-bold p-6 text-white">CrimeVision Map</h1>
 
-<div id="map" class="mx-6 rounded-xl"></div>
+<div id="map"></div>
+
+<div class="panel">
+  <p>Crime Dashboard</p>
+  <p>Total Crimes: <span id="total-crimes">0</span></p>
+  <p>Hotspots Highlighted</p>
+</div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 <script src="script.js"></script>
 
 </body>
