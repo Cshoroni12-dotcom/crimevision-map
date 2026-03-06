@@ -1,1 +1,31 @@
+<!DOCTYPE html>
 
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CrimeVision Map</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<style>
+#map {
+  height: 600px;
+}
+</style>
+
+</head>
+
+<body class="bg-gray-900 text-white">
+
+<h1 class="text-3xl font-bold p-6">CrimeVision Map</h1>
+
+<div id="map" class="mx-6 rounded-xl"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script src="script.js"></script>
+
+</body>
+</html>
