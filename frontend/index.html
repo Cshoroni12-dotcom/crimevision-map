@@ -13,8 +13,8 @@
 
   <style>
     html, body, #map { height: 100%; margin: 0; }
-    
-    /* Apple Glass style panels */
+
+    /* Apple Glass Panels */
     .glass-panel {
       backdrop-filter: blur(20px);
       background-color: rgba(255,255,255,0.1);
@@ -51,24 +51,24 @@
     <h2 class="text-2xl font-semibold mb-2">CrimeVision AR Dashboard</h2>
     <p class="text-white/80 mb-4">Current Crime Rate:</p>
     <div class="w-full h-4 bg-white/30 rounded-full overflow-hidden mb-4">
-      <div class="h-full bg-green-300 rounded-full" style="width: 0%;"></div>
+      <div id="crime-rate-bar" class="h-full bg-green-300 rounded-full" style="width: 0%;"></div>
     </div>
-    <button class="w-full glass-button text-white font-medium">Refresh Data</button>
+    <button id="refresh-btn" class="w-full glass-button text-white font-medium">Refresh Data</button>
   </div>
 
   <!-- Filters Panel -->
   <div class="absolute top-6 right-6 w-64 p-4 glass-panel">
     <h3 class="text-lg font-semibold mb-3">Filters</h3>
     <label class="flex items-center mb-2 cursor-pointer">
-      <input type="checkbox" class="mr-2 accent-cyan-300">
+      <input type="checkbox" id="violent-checkbox" class="mr-2 accent-cyan-300" checked>
       Violent Crimes
     </label>
     <label class="flex items-center mb-2 cursor-pointer">
-      <input type="checkbox" class="mr-2 accent-green-300">
+      <input type="checkbox" id="property-checkbox" class="mr-2 accent-green-300" checked>
       Property Crimes
     </label>
     <label class="flex items-center cursor-pointer">
-      <input type="checkbox" class="mr-2 accent-blue-200">
+      <input type="checkbox" id="other-checkbox" class="mr-2 accent-blue-200" checked>
       Other
     </label>
   </div>
@@ -76,36 +76,7 @@
   <!-- Leaflet JS + Heatmap -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
-  <script>
-    const map = L.map('map').setView([37.5665, 126.9780], 13);
-
-    // Base map
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19
-    }).addTo(map);
-
-    // Placeholder for real crime data
-    // Example structure: [{lat: 37.56, lng: 126.98, type: "violent"}, ...]
-    const crimes = []; // Empty for now, ready for real data
-
-    // Heatmap (empty until data is added)
-    const heatPoints = crimes.map(c => [c.lat, c.lng, 0.6]);
-    L.heatLayer(heatPoints, { radius: 25, blur: 15, maxZoom: 17 }).addTo(map);
-
-    // Glowing markers (light blue & green)
-    crimes.forEach(crime => {
-      let color = crime.type === "violent" ? "#7FDBFF" : "#7CFC00"; // light blue or light green
-      const marker = L.circleMarker([crime.lat, crime.lng], {
-        radius: 10,
-        fillColor: color,
-        color: "#fff",
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.9
-      }).addTo(map);
-
-      marker.bindPopup(`Type: ${crime.type}`);
-    });
-  </script>
+  <!-- External script -->
+  <script src="script.js"></script>
 </body>
 </html>
