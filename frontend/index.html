@@ -3,13 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>CrimeVision AR Glass UI</title>
-
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
   <style>
     html, body {
       height: 100%;
@@ -21,8 +16,11 @@
       z-index: 0;
     }
 
-    /* Apple Glass panel */
     .glass-panel {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      width: 20rem;
       backdrop-filter: blur(20px);
       background-color: rgba(255,255,255,0.1);
       border: 1px solid rgba(255,255,255,0.25);
@@ -31,7 +29,6 @@
       color: white;
       padding: 1rem;
       z-index: 1000;
-      position: absolute;
     }
 
     .glass-button {
@@ -60,7 +57,7 @@
   <div id="map"></div>
 
   <!-- Dashboard -->
-  <div class="glass-panel" style="top: 1.5rem; left: 1.5rem; width: 20rem;">
+  <div class="glass-panel">
     <h2 class="text-2xl font-semibold mb-2">CrimeVision AR Dashboard</h2>
     <p class="text-white/80 mb-4">Current Crime Rate:</p>
     <div class="w-full h-4 bg-white/30 rounded-full overflow-hidden mb-4">
@@ -69,7 +66,6 @@
     <button id="refresh-btn" class="glass-button">Refresh Data</button>
   </div>
 
-  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
   <script src="script.js"></script>
