@@ -1,57 +1,68 @@
-// Initialize the map
-const map = L.map('map').setView([37.5665, 126.9780], 13);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CrimeVision AR Glass UI</title>
 
-// Add base tiles
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19
-}).addTo(map);
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-// Placeholder for real crime data
-// Structure example: {lat: 37.566, lng: 126.978, type: "violent"}
-let crimes = []; // currently empty, ready for real data
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
-// Create heatmap layer
-let heatLayer = L.heatLayer([], { radius: 25, blur: 15, maxZoom: 17 }).addTo(map);
+  <style>
+    html, body, #map { height: 100%; margin: 0; }
 
-// Function to render crimes
-function renderCrimes() {
-  // Remove old markers
-  if (window.markers) window.markers.forEach(m => map.removeLayer(m));
-  window.markers = [];
+    /* Apple Glass style panels */
+    .glass-panel {
+      backdrop-filter: blur(20px);
+      background-color: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 1rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      color: white;
+      padding: 1rem;
+      z-index: 1000;
+    }
 
-  // Add new markers
-  crimes.forEach(crime => {
-    let color = crime.type === "violent" ? "#7FDBFF" : "#7CFC00"; // light blue or light green
-    const marker = L.circleMarker([crime.lat, crime.lng], {
-      radius: 10,
-      fillColor: color,
-      color: "#fff",
-      weight: 1,
-      opacity: 1,
-      fillOpacity: 0.9
-    }).addTo(map);
+    /* Buttons */
+    .glass-button {
+      backdrop-filter: blur(10px);
+      background-color: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 0.75rem;
+      padding: 0.5rem 1rem;
+      color: white;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
 
-    marker.bindPopup(`Type: ${crime.type}`);
-    window.markers.push(marker);
-  });
+    .glass-button:hover {
+      background-color: rgba(255,255,255,0.15);
+      box-shadow: 0 0 15px rgba(0,255,255,0.4);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="bg-gray-900">
 
-  // Update heatmap
-  const heatPoints = crimes.map(c => [c.lat, c.lng, 0.6]);
-  heatLayer.setLatLngs(heatPoints);
+  <!-- Map -->
+  <div id="map"></div>
 
-  // Update crime rate bar (percentage based on number of crimes)
-  const rateBar = document.getElementById("crime-rate-bar");
-  const percent = Math.min(100, crimes.length * 10); // just an example scale
-  rateBar.style.width = percent + "%";
-}
+  <!-- Dashboard Panel -->
+  <div class="absolute top-6 left-6 w-80 glass-panel">
+    <h2 class="text-2xl font-semibold mb-2">CrimeVision AR Dashboard</h2>
+    <p class="text-white/80 mb-4">Current Crime Rate:</p>
+    <div class="w-full h-4 bg-white/30 rounded-full overflow-hidden mb-4">
+      <div id="crime-rate-bar" class="h-full bg-green-300 rounded-full" style="width: 0%;"></div>
+    </div>
+    <button id="refresh-btn" class="glass-button w-full">Refresh Data</button>
+  </div>
 
-// Initial render
-renderCrimes();
-
-// Refresh button logic
-document.getElementById("refresh-btn").addEventListener("click", () => {
-  console.log("Refresh clicked. Fetch new data here.");
-  // Example: fetch new data from API
-  // crimes = fetchCrimeData();
-  renderCrimes();
-});
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
