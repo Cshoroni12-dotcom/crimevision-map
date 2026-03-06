@@ -6,23 +6,25 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap'
 }).addTo(map);
 
-// Load crime data
-fetch('crimes.json')
-.then(response => response.json())
-.then(data => {
+// Built-in crime data
+var crimes = [
+    {lat: 37.5665, lng: 126.9780, type: "Robbery"},
+    {lat: 37.5700, lng: 126.9820, type: "Assault"},
+    {lat: 37.5650, lng: 126.9900, type: "Theft"},
+    {lat: 37.5610, lng: 126.9750, type: "Burglary"},
+    {lat: 37.5685, lng: 126.9905, type: "Vandalism"}
+];
 
-    // Add markers
-    data.forEach(crime => {
-        L.marker([crime.lat, crime.lng])
-         .addTo(map)
-         .bindPopup("Crime: " + crime.type);
-    });
+// Add markers and heatmap
+crimes.forEach(function(crime) {
+    L.marker([crime.lat, crime.lng])
+     .addTo(map)
+     .bindPopup("Crime: " + crime.type);
+});
 
-    // Update total crimes in panel
-    document.getElementById('total-crimes').innerText = data.length;
+// Update panel total
+document.getElementById('total-crimes').innerText = crimes.length;
 
-    // Create heatmap points
-    var heatPoints = data.map(c => [c.lat, c.lng, 0.5]); // 0.5 = intensity
-    var heat = L.heatLayer(heatPoints, {radius: 25, blur: 20, maxZoom: 17}).addTo(map);
-})
-.catch(err => console.error("Failed to load crime data:", err));
+// Create heatmap points
+var heatPoints = crimes.map(c => [c.lat, c.lng, 0.5]);
+var heat = L.heatLayer(heatPoints, {radius: 25, blur: 20, maxZoom: 17}).addTo(map);
