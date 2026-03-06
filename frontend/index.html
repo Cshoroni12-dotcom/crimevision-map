@@ -2,91 +2,109 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>CrimeVision Map - Apple Glass UI</title>
+  <title>CrimeVision AR Glass UI</title>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.heat/dist/leaflet-heat.css"/>
+
   <style>
-    /* Fullscreen map */
-    #map {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
+    html, body, #map { height: 100%; margin: 0; }
+    
+    /* Apple Glass style panels */
+    .glass-panel {
+      backdrop-filter: blur(20px);
+      background-color: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 1rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      color: white;
     }
 
-    /* Apple Glass hover glow for buttons */
+    /* Buttons */
+    .glass-button {
+      backdrop-filter: blur(10px);
+      background-color: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 0.75rem;
+      padding: 0.5rem 1rem;
+      transition: all 0.3s ease;
+    }
+
     .glass-button:hover {
-      box-shadow: 0 0 15px rgba(255,255,255,0.5);
+      background-color: rgba(255,255,255,0.15);
+      box-shadow: 0 0 15px rgba(0,255,255,0.4);
+      transform: translateY(-2px);
     }
   </style>
 </head>
 <body class="bg-gray-900">
 
-  <!-- Map Container -->
+  <!-- Map -->
   <div id="map"></div>
 
-  <!-- Floating Crime Dashboard -->
-  <div class="absolute top-6 left-6 w-80 p-5 rounded-2xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-lg">
-    <h2 class="text-white text-2xl font-semibold mb-2">CrimeVision Dashboard</h2>
+  <!-- Dashboard Panel -->
+  <div class="absolute top-6 left-6 w-80 p-5 glass-panel">
+    <h2 class="text-2xl font-semibold mb-2">CrimeVision AR Dashboard</h2>
     <p class="text-white/80 mb-4">Current Crime Rate:</p>
     <div class="w-full h-4 bg-white/30 rounded-full overflow-hidden mb-4">
-      <div class="h-full bg-red-400 rounded-full" style="width: 65%;"></div>
+      <div class="h-full bg-green-300 rounded-full" style="width: 0%;"></div>
     </div>
-    <button class="w-full py-2 rounded-lg bg-white/10 backdrop-blur-sm text-white font-medium glass-button transition duration-300">Refresh Data</button>
+    <button class="w-full glass-button text-white font-medium">Refresh Data</button>
   </div>
 
-  <!-- Floating Filters Panel -->
-  <div class="absolute top-6 right-6 w-64 p-4 rounded-2xl bg-white/15 backdrop-blur-lg border border-white/20 shadow-lg">
-    <h3 class="text-white font-semibold mb-3">Filters</h3>
-    <label class="flex items-center mb-2">
-      <input type="checkbox" class="mr-2 accent-red-400">
+  <!-- Filters Panel -->
+  <div class="absolute top-6 right-6 w-64 p-4 glass-panel">
+    <h3 class="text-lg font-semibold mb-3">Filters</h3>
+    <label class="flex items-center mb-2 cursor-pointer">
+      <input type="checkbox" class="mr-2 accent-cyan-300">
       Violent Crimes
     </label>
-    <label class="flex items-center mb-2">
-      <input type="checkbox" class="mr-2 accent-yellow-400">
+    <label class="flex items-center mb-2 cursor-pointer">
+      <input type="checkbox" class="mr-2 accent-green-300">
       Property Crimes
     </label>
-    <label class="flex items-center">
-      <input type="checkbox" class="mr-2 accent-blue-400">
+    <label class="flex items-center cursor-pointer">
+      <input type="checkbox" class="mr-2 accent-blue-200">
       Other
     </label>
   </div>
 
-  <!-- Leaflet JS -->
+  <!-- Leaflet JS + Heatmap -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
   <script>
-    // Initialize map
-    const map = L.map('map').setView([37.5665, 126.9780], 13); // Seoul coordinates
+    const map = L.map('map').setView([37.5665, 126.9780], 13);
 
-    // Add OpenStreetMap tiles
+    // Base map
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
+      maxZoom: 19
     }).addTo(map);
 
-    // Example crime data
-    const crimes = [
-      { lat: 37.5700, lng: 126.9768, type: "violent" },
-      { lat: 37.5651, lng: 126.9895, type: "property" },
-      { lat: 37.5610, lng: 126.9820, type: "other" },
-    ];
+    // Placeholder for real crime data
+    // Example structure: [{lat: 37.56, lng: 126.98, type: "violent"}, ...]
+    const crimes = []; // Empty for now, ready for real data
 
-    // Add markers
+    // Heatmap (empty until data is added)
+    const heatPoints = crimes.map(c => [c.lat, c.lng, 0.6]);
+    L.heatLayer(heatPoints, { radius: 25, blur: 15, maxZoom: 17 }).addTo(map);
+
+    // Glowing markers (light blue & green)
     crimes.forEach(crime => {
-      let color = crime.type === "violent" ? "red" :
-                  crime.type === "property" ? "yellow" : "blue";
-      L.circleMarker([crime.lat, crime.lng], {
-        radius: 8,
+      let color = crime.type === "violent" ? "#7FDBFF" : "#7CFC00"; // light blue or light green
+      const marker = L.circleMarker([crime.lat, crime.lng], {
+        radius: 10,
         fillColor: color,
         color: "#fff",
         weight: 1,
         opacity: 1,
-        fillOpacity: 0.8
-      }).addTo(map).bindPopup(`Type: ${crime.type}`);
+        fillOpacity: 0.9
+      }).addTo(map);
+
+      marker.bindPopup(`Type: ${crime.type}`);
     });
   </script>
 </body>
