@@ -20,3 +20,5 @@ L.marker([crime.lat, crime.lng])
 .addTo(map)
 .bindPopup("Crime: " + crime.type);
 });
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="script.js"></script>
