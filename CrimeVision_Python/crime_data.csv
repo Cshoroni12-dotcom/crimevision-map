@@ -1,4 +1,3 @@
 lat,lng,crime_type,timestamp
 37.5665,126.9780,violent,2026-03-06 14:30
 37.5680,126.9820,property,2026-03-06 15:00
-pip install pandas scikit-learn
