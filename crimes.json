@@ -1,0 +1,9 @@
+[
+  {"lat":37.5665,"lng":126.9780,"type":"Robbery"},
+  {"lat":37.5700,"lng":126.9820,"type":"Assault"},
+  {"lat":37.5650,"lng":126.9900,"type":"Theft"},
+  {"lat":37.5610,"lng":126.9750,"type":"Burglary"},
+  {"lat":37.5685,"lng":126.9905,"type":"Vandalism"},
+  {"lat":37.5625,"lng":126.9810,"type":"Arson"},
+  {"lat":37.5670,"lng":126.9850,"type":"Pickpocket"}
+]
