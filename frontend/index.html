@@ -1,31 +1,37 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <title>CrimeVision Map</title>
 
-<script src="https://cdn.tailwindcss.com"></script>
-
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
 <style>
 #map {
-  height: 600px;
+  height: 100vh;
 }
 </style>
 
 </head>
+<body>
 
-<body class="bg-gray-900 text-white">
+<h2>CrimeVision Map</h2>
+<div id="map"></div>
 
-<h1 class="text-3xl font-bold p-6">CrimeVision Map</h1>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<div id="map" class="mx-6 rounded-xl"></div>
+<script>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+var map = L.map('map').setView([37.5665, 126.9780], 12);
 
-<script src="script.js"></script>
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+maxZoom: 19
+}).addTo(map);
+
+L.marker([37.5665,126.9780]).addTo(map)
+.bindPopup("Example Crime Location")
+.openPopup();
+
+</script>
 
 </body>
 </html>
